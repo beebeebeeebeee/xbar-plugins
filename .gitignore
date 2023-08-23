@@ -1,0 +1,4 @@
+*.vars.json
+
+.idea
+DS_Store
