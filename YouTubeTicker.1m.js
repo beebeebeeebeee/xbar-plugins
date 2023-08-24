@@ -33,7 +33,7 @@ async function main() {
 
     const compareTime = new Date(Date.now() - 1 * 1000 * 60 * 60)
     const compareHistorySubscriberCountDiff = (history.filter(e => +new Date(e.timestamp) > compareTime)[0]?.subscriberCount ?? subscriberCount) - subscriberCount
-    console.log(`\x1b[0m${subscriberCount.toLocaleString()} \x1b[${compareHistorySubscriberCountDiff >= 0 ? '32' : '31'}m${compareHistorySubscriberCountDiff >= 0 ? '+' : ''}${compareHistorySubscriberCountDiff} | image=${youTubeIcon}`)
+    console.log(`\x1b[0m${subscriberCount.toLocaleString()} \x1b[1m\x1b[${compareHistorySubscriberCountDiff >= 0 ? '32' : '31'}m${compareHistorySubscriberCountDiff >= 0 ? '+' : ''}${compareHistorySubscriberCountDiff} | image=${youTubeIcon}`)
 
     const appendHistory = {
         timestamp: new Date().toUTCString(),
