@@ -32,7 +32,7 @@ async function main() {
     const {items: [{statistics: {subscriberCount}}]} = await result.json()
 
     const compareTime = new Date(Date.now() - 1 * 1000 * 60 * 60)
-    const compareHistorySubscriberCountDiff = (history.filter(e => +new Date(e.timestamp) > compareTime)[0]?.subscriberCount ?? subscriberCount) - subscriberCount
+    const compareHistorySubscriberCountDiff = subscriberCount - (history.filter(e => +new Date(e.timestamp) > compareTime)[0]?.subscriberCount ?? subscriberCount)
     console.log(`\x1b[0m${subscriberCount.toLocaleString()} \x1b[1m\x1b[${compareHistorySubscriberCountDiff >= 0 ? '32' : '31'}m${compareHistorySubscriberCountDiff >= 0 ? '+' : ''}${compareHistorySubscriberCountDiff} | image=${youTubeIcon}`)
 
     const appendHistory = {
@@ -41,7 +41,7 @@ async function main() {
     }
 
     const filterTime = new Date(Date.now() - 3 * 1000 * 60 * 60)
-    fs.writeFileSync(HISTORY_FILE, JSON.stringify([...history, appendHistory].filter(e=>+new Date(e.timestamp) > filterTime), null, 4))
+    fs.writeFileSync(HISTORY_FILE, JSON.stringify([...history, appendHistory].filter(e => +new Date(e.timestamp) > filterTime), null, 4))
 }
 
 void main()
