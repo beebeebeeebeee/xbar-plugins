@@ -3,6 +3,9 @@
 // <xbar.var>string(XBAR_YOUTUBE_VAR_YOUTUBE_ID=""): Youtube id (UCpfiZNJ5zmnSQ3eUtTPdaWg).</xbar.var>
 // <xbar.var>string(XBAR_YOUTUBE_VAR_API_KEY=""): API key to get access to remote data.</xbar.var>
 
+const fs = require("node:fs")
+const HISTORY_FILE = './YouTubeTicker-history.json'
+
 const youTubeIcon = "iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADdcAAA3XAUI" +
     "om3gAAAMESURBVFhH7VbPS1RRGP2CogkRRAqyoH8gMsW0aX75AyWREFr0CysIgiByIUKL9pEUVus2SZm7CFqUSom1iTZBUdaqWkjawtGiotQ5r/O9+Wbe9HwjL/tBwRw" +
     "4vDv3ft853333vntHSijhvwHaZS3apMxplApyfRFWaIzGWtrK4CSkDgk5iJSczCTlLH8PZBIyTD4iJ9j/Gkl5wzGX2ra+FxrD510+BzRXNVRLNU2+ODiDCJP6MylJO83" +
@@ -14,7 +17,12 @@ const youTubeIcon = "iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4
     "gwbc7xz12WT3Mrjh4sdTztOpaTEg3CzrHdbvG5wgFHnOGL8m3LHKSnDJOah/jXmkMOcr2de72PuZ1c6xrPhpwA4aFI7KKM4zwUyufi0olRTd8qpeNFK5Sum32cXaVGqO" +
     "xmmPpJZTwL0PkOxoj5CNBuCXOAAAAAElFTkSuQmCC";
 
-async function main(){
+async function main() {
+    if (!fs.existsSync(HISTORY_FILE)) {
+        fs.writeFileSync(HISTORY_FILE, JSON.stringify([], null, 4))
+    }
+    const history = JSON.parse(fs.readFileSync(HISTORY_FILE).toString())
+
     const params = new URLSearchParams({
         id: process.env.XBAR_YOUTUBE_VAR_YOUTUBE_ID,
         part: "statistics",
@@ -22,14 +30,19 @@ async function main(){
     });
     const result = await fetch(`https://www.googleapis.com/youtube/v3/channels?${params.toString()}`)
     const {items: [{statistics: {subscriberCount}}]} = await result.json()
-    console.log(`${subscriberCount} | image=${youTubeIcon}`)
+
+    const compareTime = new Date(Date.now() - 1 * 1000 * 60 * 60)
+    const compareHistorySubscriberCountDiff = (history.filter(e => +new Date(e.timestamp) > compareTime)[0]?.subscriberCount ?? subscriberCount) - subscriberCount
+    console.log(`\x1b[0m${subscriberCount.toLocaleString()} \x1b[${compareHistorySubscriberCountDiff >= 0 ? '32' : '31'}m${compareHistorySubscriberCountDiff >= 0 ? '+' : ''}${compareHistorySubscriberCountDiff} | image=${youTubeIcon}`)
+
+    const appendHistory = {
+        timestamp: new Date().toUTCString(),
+        subscriberCount
+    }
+
+    const filterTime = new Date(Date.now() - 3 * 1000 * 60 * 60)
+    fs.writeFileSync(HISTORY_FILE, JSON.stringify([...history, appendHistory].filter(e=>+new Date(e.timestamp) > filterTime), null, 4))
 }
 
 void main()
-
-// console.log("HI")
-// console.log("---")
-// console.log("Open website | href=https://xbarapp.com | color=red | key=CmdOrCtrl+o\n" +
-//     "Open home folder | shell=open | param1=\"~/\"\n" +
-//     "App version: v1.0 | disabled=true | size=10")
 
