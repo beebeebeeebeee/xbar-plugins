@@ -4,7 +4,7 @@
 // <xbar.var>string(XBAR_YOUTUBE_VAR_API_KEY=""): API key to get access to remote data.</xbar.var>
 
 const fs = require("node:fs")
-const HISTORY_FILE = './YouTubeTicker-history.json'
+const HISTORY_FILE = './YouTubeTicker-history.json.off'
 
 const youTubeIcon = "iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADdcAAA3XAUI" +
     "om3gAAAMESURBVFhH7VbPS1RRGP2CogkRRAqyoH8gMsW0aX75AyWREFr0CysIgiByIUKL9pEUVus2SZm7CFqUSom1iTZBUdaqWkjawtGiotQ5r/O9+Wbe9HwjL/tBwRw" +
