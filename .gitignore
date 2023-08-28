@@ -1,4 +1,5 @@
 *.json
+*.json.off
 
 .idea
 DS_Store
